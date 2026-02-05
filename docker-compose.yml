@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # Serviço 1: Navegador
+  chrome:
+    image: selenium/standalone-chrome:latest
+    shm_size: "2gb"
+    networks:
+      - data-network
+
+  # Serviço 2: Banco de Dados
+  db_postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=adminpass
+      - POSTGRES_DB=kabum_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - data-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d kabum_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Serviço 3: Seu Scraper
+  scraper:
+    build: .
+    depends_on:
+      chrome:
+        condition: service_started
+      db_postgres:
+        condition: service_healthy
+    environment:
+      - SELENIUM_HOST=http://chrome:4444/wd/hub
+      - DB_CONNECTION_STRING=postgresql+psycopg2://admin:adminpass@db_postgres:5432/kabum_db
+    volumes:
+      - ./src:/app/src
+    networks:
+      - data-network
+
+networks:
+  data-network:
+
+volumes:
+  postgres_data:
