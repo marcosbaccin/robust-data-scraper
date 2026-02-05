@@ -33,7 +33,7 @@ O projeto segue o padrão de microsserviços containerizados:
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/SEU_USUARIO/robust-data-scraper.git](https://github.com/SEU_USUARIO/robust-data-scraper.git)
+   git clone [https://github.com/marcosbaccin/robust-data-scraper.git](https://github.com/SEU_USUARIO/robust-data-scraper.git)
    cd robust-data-scraper
 
 2. **Inicie o Pipeline:**
